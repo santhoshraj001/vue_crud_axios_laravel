@@ -1,0 +1,669 @@
+
+| Directive | Purpose         |
+| --------- | --------------- |
+| `v-if`    | Conditional     |
+| `v-else`  | Else condition  |
+| `v-show`  | Show/Hide       |
+| `v-for`   | Loop            |
+| `v-model` | Two-way binding |
+| `v-bind`  | Bind attribute  |v-bind :	Attribute bind
+| `v-on`    | Events          |v-on @	Event
+------------------vuejs-------------------------
+
+
+<template>
+  <h2>welcome to second page</h2>
+
+<div id="app">
+    <h2>Simple Vue CRUD</h2>
+
+    <!-- Input Section -->
+    <input type="text" v-model="newUser" placeholder="Enter name">
+    
+    <button @click="addUser">
+        {{ editIndex === null ? "Add" : "Update" }}
+    </button>
+
+    <hr>
+
+    <!-- User List -->
+    <ul>
+        <li v-for="(user, index) in users" :key="index">
+            {{ user }}
+
+            <button @click="editUser(index)">Edit</button>
+            <button @click="deleteUser(index)">Delete</button>
+        </li>
+    </ul>
+</div>
+
+
+
+</template>
+
+
+------------------Use axios instead of fetch and vue-----------------------------
+👉 Axios = is js tool/library that performs AJAX
+🔹 First understand:
+
+AJAX = Technique to send request without page reload
+Axios = JavaScript library that uses AJAX internally
+
+✅ 1️⃣ AJAX
+👉 AJAX is not a library
+👉 It is a technique
+✔ Used to send request to server
+✔ Without reloading the page
+Example idea:
+“Send data in background”
+
+✅ 2️⃣ jQuery
+👉 jQuery is a JavaScript library
+✔ Helps with:
+DOM manipulation
+Events
+Animations
+AJAX
+jQuery can perform AJAX using:
+$.ajax()
+
+So jQuery = big toolbox
+AJAX = one tool inside it
+
+✅ 3️⃣ Axios
+👉 Axios is also a JavaScript library
+✔ But it is mainly used only for:
+Sending HTTP requests (AJAX) | Axios = modern way to do AJAX
+Example:
+axios.get('/users')
+
+| Term   | What it is | Purpose                     |
+| ------ | ---------- | --------------------------- |
+| AJAX   | Technique  | Send request without reload |
+| jQuery | Library    | DOM + AJAX + more           |
+| Axios  | Library    | Only HTTP requests (Sending HTTP requests (AJAX))|
+
+-------------------fetch vs axios------------------
+| Feature               | fetch                 | axios            |
+| --------------------- | --------------------- | ---------------- |
+| Type                  | Built-in JavaScript   | External library |
+| Install needed?       | ❌ No                  | ✅ Yes            |
+| JSON handling         | Manual (`res.json()`) | Automatic        |
+| Error handling        | Manual check          | Better built-in  |
+| Older browser support | Limited               | Better           |
+
+
+                       ----------------------
+<template>
+ 
+<div id="app">
+    <h2>Simple Vue CRUD</h2>
+
+    <!-- Input Section -->
+    <input type="text" v-model="newUser" placeholder="Enter name">
+    
+    <button @click="addUser">
+        {{ editIndex === null ? "Add" : "Update" }}
+    </button>
+
+    <hr>
+
+    <!-- User List -->
+    <ul>
+        <li v-for="(user, index) in users" :key="index">
+            {{ user }}
+
+            <button @click="editUser(index)">Edit</button>
+            <button @click="deleteUser(index)">Delete</button>
+        </li>
+    </ul>
+</div>
+
+</template>
+
+<script>
+export default {
+  methods: {
+    log() {
+      this.$router.push('/second-sample')
+    }
+  }
+}
+</script>
+
+----------------------------------------------------------------------
+
+
+
+🧠 Correct Architecture (Vue + Laravel)
+Controller should NOT return Vue component.
+
+Controller should return:
+JSON (for API)
+OR
+Blade file (root layout)
+
+
+Proper Way To Load Vue Page
+STEP 1: Create Blade File
+Create:
+resources/views/app.blade.php
+
+Inside:
+<!DOCTYPE html>
+<html>
+<head>
+    @vite('resources/js/app.js')
+</head>
+<body>
+    <div id="app"></div>
+</body>
+</html>
+
+1️⃣ Big Picture Architecture (Laravel + Vue SPA)
+Browser
+   ↓
+Laravel (serves main blade file)
+   ↓
+Blade loads Vue (app.js)
+   ↓
+Vue Router controls pages
+   ↓
+Vue components render UI
+   ↓
+Axios calls Laravel API routes
+   ↓
+Laravel Controller returns JSON
+   ↓
+Database
+
+🟢 How It Works
+
+Browser →
+web.php loads vue file →
+Vue loads →
+Axios calls /users →
+Controller returns JSON →
+Vue shows data
+
+remember
+1.created one vue file and import in index.js in router folder
+2.then added route in web.php file
+3.i added the axios route based on the web.php route in script inside the vue file 
+4.then return the database value in json response from controller
+
+<input type="text" v-model="form.name"/>
+🔥 What is v-model?
+v-model is used for two-way data binding.
+That means:
+When user types → value goes into form.name
+If form.name changes → input automatically updates
+So Vue connects input field and JavaScript variable.
+
+---------------axios error handling using catch(error)----------
+axios.post("/users", this.form)
+  .then((response) => {
+    this.message = response.data.message;
+    this.resetForm();
+    this.getUsers();
+  })
+  .catch((error) => {            //.catch() works like xhr error.
+    console.log(error);
+  });
+
+2️⃣ How To Access Error Like XHR
+Inside .catch():
+.catch((error) => {
+  console.log(error.response);        // full response
+  console.log(error.response.data);   // JSON data
+  console.log(error.response.status); // HTTP status code
+
+});
+
+| jQuery -ajax          | Axios                 |
+| ---------------- | --------------------- |
+| error(xhr)       | .catch(error)         |
+| xhr.responseText | error.response.data   |
+| xhr.status       | error.response.status |
+
+In Vue:
+
+✔ Use .then() for success
+✔ Use .catch() for errors
+✔ Check error.response.status
+✔ Store errors inside data()
+✔ Show errors using v-if
+
+----------------comparison of jQuery ajax and axios---------------
+| Project Type  | Best Choice          |
+| ------------- | -------------------- |
+| Plain HTML    | jQuery AJAX          |
+| Laravel Blade | jQuery AJAX or Axios |
+| Vue + Laravel | Axios                |
+| React         | Axios / fetch        |
+
+| Term       | What it is                |
+| ---------- | ------------------------- |
+| JavaScript | Programming language      |
+| jQuery     | JS library                |
+| AJAX       | Technique to send request |
+| Axios      | Library to do AJAX        |
+| fetch()    | Built-in JS AJAX method   |
+
+✅ Always use:
+
+-> data()
+-> reactive variables
+-> v-if
+-> {{ }}
+
+Vue automatically updates DOM for you.
+
+<?php
+
+namespace App\Http\Controllers;
+use Illuminate\Support\Facades\DB;
+
+use Illuminate\Http\Request;
+
+class newVueController extends Controller
+{
+    //
+    // Get All Users
+    public function index()
+    {
+        $users = DB::table('vue_store')->get();
+        return response()->json($users);
+    }
+
+    // Insert User
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'place' => 'required|string|max:255',
+        ]);
+        DB::table('vue_store')->insert([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'place' => $request->place,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        return response()->json(['message' => 'User Added']);
+    }
+
+    // Update User
+    public function update(Request $request, $id)
+    {
+        DB::table('vue_store')
+            ->where('id', $id)
+            ->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'phone' => $request->phone,
+                'place' => $request->place,
+                'updated_at' => now()
+            ]);
+
+        return response()->json(['message' => 'User Updated']);
+    }
+
+    // Delete User
+    public function destroy($id)
+    {
+        DB::table('vue_store')->where('id', $id)->delete();
+
+        return response()->json(['message' => 'User Deleted']);
+    }
+}
+
+
+| Concept   | Direction       |
+| --------- | --------------- |
+| Props     | Parent ➜ Child  |
+| Emit      | Child ➜ Parent  |
+| Computed  | Calculate value |
+| Watch     | Detect change   |
+| Lifecycle | Auto run        |
+| v-for     | Loop data       |
+| Router    | Page navigation |
+-----------------------$emit--------------------
+
+$emit sends an event and data from child component to parent component.
+
+----------------WATCH---------
+watch = execute a function when a reactive data value changes.
+watch in Vue is used to monitor (watch) a data value and run code when it changes.
+
+User types → "John"
+So:
+employee.name = "John"
+🟢 2. watch detects change
+watch: {
+  employee: {
+    handler(newValue) {
+      this.$emit('employee-updated', newValue)         // Child sends data using $emit
+    },
+    deep: true
+  }
+}
+What happens?
+employee object changed
+watch runs automatically
+newValue = updated employee object
+✅ Why deep: true?
+employee is an object:
+eg:
+employee.name
+employee.email
+employee.age
+
+Without deep: true:
+
+❌ watch detects only object replacement
+✔ with deep → detects property changes
+
+IN PARENT -- <Employee-Forms @employee-updated="receiveEmployee"/>  👉 When child emits employee-updated → run receiveEmployee().
+simple notes:
+🔹watch
+Watches reactive data
+Runs when value changes
+🔹 deep: true
+Required for objects/arrays
+🔹 $emit
+Child → Parent communication
+🔹 @event
+Parent listens to child event and receive data 
+
+-----------------------------vue tutorial from yt this example code have in vue yt folder--------------------------
+
+1.What is vue --(directed by enan you)
+2.setup and installation
+3.vue cli
+4.vue devtools
+5.employee CRUD
+6.vue file structure
+7.creating a component
+8.loops
+9.working with forms
+10.event listeners
+11.methods
+12.emitting events to the Parent
+13.retrieving events from the Child
+14.basic form validation
+15.computer properties
+16.conditionls
+17.adding a reference
+18.making asynchronous rest api calls
+19.Lifecycle methods
+20.deploying production build
+
+
+BASIC KNOW TO LEARN VUE = html,css,js basic(es6 syntax),node.js and npm ,REST API
+1.What is vue --(directed by enan you)
+-> open source front end js framework, used to imporve user experience and fast loading
+-> view layer of an MVC application
+(MVC)
+M - used and work for adding DB works
+V - used and work for UI (vue)
+C - work between M and V , like a backend functionality
+
+2.setup and installation
+Two ways: (static html and vue cli)
+-> static html- injected into a static html file(directly add the vue methods in html code)
+  - adding the vue packaged script link from code and add on the html head
+      
+  example code:
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue Test</title>
+    <script src="https://unpkg.com/vue@3"></script>  // this is that vue packaged link
+</head>
+<body>
+    <div id="app">
+        <h1>{{ message }}</h1>
+    </div>
+
+    <script>
+        const{ createApp } = Vue;
+        createApp({
+            data() {
+                return {
+                    message: 'Hello Vue!'
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+</html>
+
+  - <p {{message}} /p> - text interpolation
+  - .mount(#app) - chainmethod (connect the div tag using id name of app)
+  - render means vue gived result after all the vue operations 
+
+-> vue cli - vue command line interface
+ 
+ - main.js  
+                           
+
+3.vue cli
+
+4.vue devtools
+ - install vue devtool extention and set in browser and show in developer tools(ctrl+shift+i)
+
+5.employee CRUD
+
+6.vue file structure
+ - <template>
+ - <script>
+ - <style>
+ example:
+ <template></template>
+ <script>
+     export default {
+        name: 'component-name',
+     }
+ </script>
+ <style scoped></style>      ----> scoped used to add this style only in this template not other template
+
+7.creating a component
+ -> creating separate component for separate fields and import in one main file
+ example:
+  -> employee_table.vue
+  -> employee_form.vue
+  -> employee_list.vue   ---- import that employee_table and employee_form in this component in the top of script
+                               tag(add this two component in this single component)
+example for:
+    <html>
+<head>
+ 
+    <script src="https://unpkg.com/vue@3"></script>
+</head>
+<body>
+  <h1>employee list</h1>
+
+    <script>
+       import employee_form from '...'
+       import employee_table from '...'
+       import HelloWorld from './components/HelloWorld.vue'   //its sample import method of example another component
+
+    </script>
+</body>
+</html>
+
+7.5) - DATA
+-> (DOM)- change data automatically based on the html change (its work like browser give api to vue)
+ 
+8.loops
+-> v-for (employee in employees)
+
+9.working with forms
+-> create a form in separate vue file and add in parent component
+example:
+eg code is employee_forms.vue file
+ 
+10.event listeners
+ --> its means do something after click the button using different functions
+     eg:(click,submit,keypress)
+
+     ->(v-on:submit) or (@submit)  --- its means adding submit event
+     ->(v-on:submit.prevent="handlesubmit) or (@submit.prevent="handlesubmit)  = .prevent used to stop loading the page ,use in js like(event.preventDefault();)
+                                                                                  and we use handlesubmit function
+
+11.methods
+ ->methods are used to create function 
+ 
+12.emitting events to the Parent
+ ->sending event
+ props --parent to child component
+ emit ---child to parent component   (sending datas or events)
+ eg:this.$emit('employee-updated', newValue)  //its send to parent compont
+
+13.retrieving events from the Child
+ -> receives data and events form child 
+ eg: <Employee-Forms @employee-updated="receiveEmployee" @employee-details="receiveDetails"/> // @employee-updated this is event and emit name from child
+  methods: {
+     receiveEmployee(data) {
+    console.log("From Child:", data)
+  },
+  receiveDetails(employee) {
+    const newEmployee = { ...employee, id: this.employees.length + 1 }  // this is new object and this is add id property in form data and this is one way data flow from child to parent component
+    this.employees = [...this.employees, newEmployee]  //(...this.employees means old employees array) this is push form data to employees array and this is one way data flow from child to parent component
+   //  this.employees.push(employee)   //this is another same method to add value in employees array
+  },
+
+}
+
+14.basic form validation
+   --> showing required field alert incase we submit form without fill the data
+   --> simple method
+     -->create reactive empty variable in data
+     -->create one function like validform for if check the field is empty 
+        eg:validateForm() {
+           this.errors = {}
+
+    if (!this.employee.name) {
+      this.errors.name = "Name is required"
+    }
+    --> then we add this function in form save function
+    eg: handlesubmit(){
+  if (!this.validateform) {
+    return
+  }  
+        this.$emit('employee-details', this.employee) 
+       
+    }, 
+
+15.computed properties
+ -->its work only if true and calculate values and does not calculate until this data changed 
+ -->using easily render and fast
+ (===) three equal means strictly field empty or same value and same datatype
+
+16.conditionls
+17.adding a reference
+18.making asynchronous rest api calls
+19.Lifecycle methods
+20.deploying production build
+
+
+
+--------------------pass data from parent to child-----------------
+eg:
+app.vue-----(parent)
+<Employee-Table :employees="employees"/>
+What happens?
+: means v-bind
+Parent passes its employees data
+Child component receives it
+
+<script>
+export default {
+  data() {
+    return {
+      employees: [
+        {id: 1, name: 'John Doe', email: 'john@example.com', 
+        office: 'Covai', age: 25, salary: 55000 },   //this is reactive data
+        {id: 2, name: 'Jane Smith', email: 'jane@example.com', 
+        office: 'Chennai', age: 30, salary: 60000 }, // this name is one property and all fields name is call like a property
+      ],
+    }
+  },
+}
+</script>
+
+employee_table.vue----(child)
+----this is child component of employee_table.vue------
+<tbody>
+                <tr v-for="employee in employees" :key="employee.id">
+                    <td>{{ employee.name }} test</td>
+                    <td>{{ employee.email }}</td>
+                    <td>{{ employee.office }}</td>
+                    <td>{{ employee.age }}</td>
+                    <td>{{ employee.salary }}</td>
+                    
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</template>
+<script>
+export default {
+    name: 'Employee-Table' ,  // this is component name use in app.vue inside template tag
+    props: {
+        employees: Array, // this data type is array and this is to receive data from parent component (app.vue)
+    }  
+}
+
+</script>
+
+Reactive data = data that automatically updates the view when its value changes.
+
+
+
+-------------THIS FILE WORKING STRUCTURE------------
+/crud page opened
+        ↓
+Blade loads
+        ↓
+Vue mounted
+        ↓
+mounted() runs
+        ↓
+axios.get('/users')
+        ↓
+Laravel route
+        ↓
+Controller
+        ↓
+Database
+        ↓
+JSON response
+        ↓
+Vue table updated
+
+EG:
+resources
+ └── js
+     ├── app.js
+     └── components
+          └── crud_operation.vue
+
+resources
+ └── views
+      └── vuetest.blade.php
+
+routes
+ └── web.php
+
+app
+ └── Http
+      └── Controllers
+           └── vueController.php
